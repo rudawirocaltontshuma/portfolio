@@ -30,10 +30,25 @@ The bar is enabled on three page types, each with a different position:
 The bar is an absolutely positioned `div` inside the `<header>` element. A small script updates its `width` on every scroll event, capped with `requestAnimationFrame` to avoid layout thrashing:
 
 ```ts
+// Cache the document max scroll position once, refresh only on
+// resize + load. Reading scrollHeight inside the per-frame scroll
+// handler would force a synchronous layout recompute every time
+// other scripts (header scroll-watcher, reveal animations) had
+// mutated the DOM earlier in the same frame.
+let docMaxScrollY = 0;
+function updateDocMaxScrollY() {
+  docMaxScrollY = document.documentElement.scrollHeight - window.innerHeight;
+}
+window.addEventListener('resize', updateDocMaxScrollY, { passive: true });
+window.addEventListener('load', updateDocMaxScrollY);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', updateDocMaxScrollY, { once: true });
+} else {
+  updateDocMaxScrollY();
+}
+
 function update() {
-  const scrollTop = window.scrollY;
-  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-  const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  const pct = docMaxScrollY > 0 ? (window.scrollY / docMaxScrollY) * 100 : 0;
   bar.style.width = `${pct}%`;
 }
 
@@ -46,6 +61,12 @@ window.addEventListener('scroll', () => {
 ```
 
 The bar colour is `var(--color-brand-500)` — it automatically matches your active colour theme and updates instantly when the visitor switches themes.
+
+## Why the document height is cached
+
+A simpler version of the script reads `document.documentElement.scrollHeight - window.innerHeight` directly inside the scroll handler. That works, but on a page with other scroll-driven scripts (the header scroll-watcher writing `data-scrolled`, reveal animations toggling `is-visible` classes), the read forces a synchronous layout recompute every frame — Lighthouse mobile flagged this as 100+ ms of forced reflow on the demo site.
+
+Caching `docMaxScrollY` and updating it only on `resize`, `load`, and `DOMContentLoaded` lets the per-frame handler do nothing but read `window.scrollY` (which is cheap and not invalidated by attribute writes elsewhere) plus the cached value. The cache is briefly `0` between script-init and `DOMContentLoaded`, but the reader can't see that — `window.scrollY` is also `0` at that point, so the bar correctly stays empty.
 
 ## The two props
 
