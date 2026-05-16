@@ -120,29 +120,29 @@ export interface SiteConfig {
 }
 
 const siteConfig: SiteConfig = {
-  name: 'Astro Rocket',
+  name: 'Rctshuma',
   description:
     'Astro Rocket — A production-ready Astro 6 starter with 12 beautiful themes, 57+ components, built-in i18n, dark mode and a fast, modern foundation to build anything on.',
   url: SITE_URL || 'https://astrorocket.dev',
   ogImage: '/og-default.svg',
-  author: 'Hans Martens',
-  email: 'hello@hansmartens.dev',
+  author: 'Rctshuma',
+  email: 'hello@rctshuma.co.za',
   address: {
     street: '',
-    city: 'Veghel',
+    city: 'Bulawayo',
     state: '',
     zip: '',
-    country: 'the Netherlands',
+    country: 'Zimbabwe',
   },
   socialLinks: [
-    'https://github.com/hansmartensdev',
-    'https://x.com/hansmartens_dev',
+    'https://github.com/rudawirocaltontshuma',
+    'https://x.com/rudawirocalton',
     'https://www.linkedin.com',
-    'https://bsky.app/profile/hansmartensdev.bsky.social',
+    'https://bsky.app/profile/rudawirocalton.bsky.social',
   ],
   twitter: {
-    site: 'https://x.com/hansmartens_dev',
-    creator: '@hansmartens_dev',
+    site: 'https://x.com/rudawirocalton',
+    creator: '@rudawirocalton_dev',
   },
   verification: {
     google: GOOGLE_SITE_VERIFICATION,
@@ -179,7 +179,7 @@ const siteConfig: SiteConfig = {
   i18n: i18nConfig,
   branding: {
     logo: {
-      alt: 'Astro Rocket',
+      alt: 'Rctshuma',
       imageUrl: '/favicon.svg',
     },
     favicon: {
